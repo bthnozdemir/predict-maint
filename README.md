@@ -201,6 +201,12 @@ Main libraries: pandas, NumPy, scikit-learn, LightGBM, SHAP, matplotlib, seaborn
 - Tune the alarm threshold to the cost of false alarms versus missed warnings.
 - Evaluate on FD002–FD004 and on real operational data.
 
+## Run the notebook
+
+1. Download FD001 from the [Kaggle copy](https://www.kaggle.com/datasets/behrad3d/nasa-cmaps).
+2. `pip install -r requirements.txt` (Python 3.12 recommended)
+3. Open `notebook/nasa-turbofan-jet-analysis.ipynb` and update the data path in the first cells.
+
 ## Data source
 
 **NASA C-MAPSS** (Commercial Modular Aero-Propulsion System Simulation), subset **FD001**. The data is synthetic (simulated), not real fleet data.
