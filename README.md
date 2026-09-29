@@ -1,4 +1,4 @@
-﻿# Predict Maint
+# Predict Maint
 
 **Explainable early-failure risk prediction for turbofan engines, with a QR-driven Android dashboard.**
 
@@ -6,7 +6,9 @@ Predict Maint is a predictive maintenance prototype built on the NASA C-MAPSS (F
 
 > **Scope:** the data is a NASA **simulation**, not real fleet data. This project demonstrates the modeling approach and a mobile decision-support display. It is a prototype and does not replace a real maintenance decision.
 
-![System flow](notebook/images/01_sistem_akisi.png)
+![System flow](notebook/images/01_sistem_akisi.jpg)
+
+*Note: figure labels inside the images are in Turkish; the surrounding text explains each one.*
 
 ---
 
@@ -43,30 +45,36 @@ Instead, the model estimates the **probability that an engine has entered the cr
 | Engines (train / test) | 100 / 100 |
 | Rows (train / test) | 20,631 / 13,096 |
 | Columns | `unit`, `cycle`, 3 operating settings, 21 sensors |
-| Constant columns removed | 7 (`set3`, `s1`, `s5`, `s10`, `s16`, `s18`, `s19`), 26 â†’ 19 columns |
+| Constant columns removed | 7 (`set3`, `s1`, `s5`, `s10`, `s16`, `s18`, `s19`), 26 → 19 columns |
 
 - **Train engines run until failure.** RUL is the engine's last cycle minus the current cycle.
-- **Test engines are truncated before failure**, as they would be in practice. Their true RUL comes from the reference file `RUL_FD001.txt`: last observed cycle + reference RUL âˆ’ current cycle.
+- **Test engines are truncated before failure**, as they would be in practice. Their true RUL comes from the reference file `RUL_FD001.txt`: last observed cycle + reference RUL − current cycle.
+
+The plot below compares each sensor of one engine against its own *healthy reference* (the mean of its first 20 cycles). Some sensors drift clearly as the engine approaches failure; others barely move.
+
+![Sensors versus their healthy reference](notebook/images/02_sensor_saglam_referans.jpg)
 
 ## Method
 
 ```text
 Raw data
-  â†’ clean constant columns, compute RUL
-  â†’ time-series features (rolling mean/std, lag, slope)   â†’ 935 features
-  â†’ MinMax scaling (fit on training data only)
-  â†’ risk label: RUL <= HORIZON_CYCLES
-  â†’ LightGBM classifier (class weighting + early stopping)
-  â†’ SHAP ranking + feature-count sweep + sensor elimination â†’ 111 features
-  â†’ retrain, choose alarm threshold by F1
-  â†’ export per-engine, per-cycle JSON for the Android app
+  → clean constant columns, compute RUL
+  → time-series features (rolling mean/std, lag, slope)   → 935 features
+  → MinMax scaling (fit on training data only)
+  → risk label: RUL <= HORIZON_CYCLES
+  → LightGBM classifier (class weighting + early stopping)
+  → SHAP ranking + feature-count sweep + sensor elimination → 111 features
+  → retrain, choose alarm threshold by F1
+  → export per-engine, per-cycle JSON for the Android app
 ```
 
 ### Time-series features
 
 A single sensor reading is noisy. For each sensor the notebook derives rolling means and standard deviations over several windows, lagged values, and slopes, which describe how the sensor has been *moving*.
 
-> **[Image placeholder]** `docs/images/02_sensor_smoothing.png` â€” raw vs smoothed sensor signal
+![Sensor noise reduction with rolling windows](notebook/images/03_sensor_gurultu_temizleme.jpg)
+
+![Lag and slope features](notebook/images/04_lag_ve_egim_ozellikleri.jpg)
 
 ### Feature reduction
 
@@ -80,9 +88,13 @@ Many derived features carry overlapping information. Features were ranked by SHA
 
 The best PR-AUC in the sweep was 0.9572 with 170 features. With 120 features it was 0.9568, within a 0.001 tolerance, so the smaller set was used.
 
-> **[Image placeholder]** `docs/images/03_feature_count_sweep.png` â€” PR-AUC versus number of features
+![PR-AUC versus number of features](notebook/images/05_ozellik_sayisi_taramasi.jpg)
 
-> **[Image placeholder]** `docs/images/04_sensor_elimination_flow.png` â€” sensor-level elimination flow
+Within the 120-feature pool, sensors were ranked by their combined SHAP share. Sensors `s14` and `s9` together contribute about 3.5% of the pool, below the 5% tolerance, so they were removed entirely. The 120 features cover about 76.7% of the total SHAP importance across all 935 features.
+
+![Sensor elimination analysis](notebook/images/06_sensor_eleme_analizi.jpg)
+
+![Sensor elimination flow](notebook/images/08_sensor_akis_semasi.jpg)
 
 ## Results
 
@@ -94,19 +106,18 @@ Final model: LightGBM on **111 features**.
 | Test PR-AUC (average precision) | 0.9222 |
 | Precision at the chosen threshold | 0.828 |
 | Recall at the chosen threshold | 0.795 |
-| ROC-AUC change vs. the 935-feature model | âˆ’0.0009 |
+| ROC-AUC change vs. the 935-feature model | −0.0009 |
 
 Reducing the input from 935 to 111 features changed ROC-AUC by less than 0.001 in this experiment.
 
 Because the risky class is rare in the test set, PR-AUC and recall are reported alongside ROC-AUC. Detection is strongest for engines very close to failure and weaker near the edge of the risk window.
 
-> **[Image placeholder]** `docs/images/05_risk_and_detection.png` â€” mean risk score by RUL range, and recall by horizon
+![Mean risk score by RUL range and detection rate by horizon](notebook/images/07_risk_skoru_ve_yakalama.jpg)
 
-Example outputs (probability over the engine's cycles, with the alarm threshold):
-
-> **[Image placeholder]** `docs/images/06_example_engine_alarm.png` â€” an engine that crosses the alarm threshold near the end of its record
-
-> **[Image placeholder]** `docs/images/07_example_engine_healthy.png` â€” an engine that stays healthy through the end of its record
+<!-- Optional example plots: uncomment once the files are in notebook/images/ and the names below match.
+![Engine that crosses the alarm threshold](notebook/images/motor_100.jpg)
+![Engine that stays healthy](notebook/images/motor_098.jpg)
+-->
 
 ## Thresholds explained
 
@@ -116,7 +127,7 @@ Three different numbers play three different roles. They are easy to confuse.
 |:---|:---|:---|
 | `HORIZON_CYCLES` | Risk label | `RUL <= HORIZON_CYCLES` marks a row as *risky* in training and evaluation. |
 | 5% | Sensor elimination | Maximum combined SHAP share of the sensors removed from the 120-feature pool. It is **not** a guarantee of at most 5% performance loss. |
-| 0.4696 | Alarm threshold | The probability that maximizes F1 for the final model. `proba >= 0.4696` â†’ `alarm = true`. |
+| 0.4696 | Alarm threshold | The probability that maximizes F1 for the final model. `proba >= 0.4696` → `alarm = true`. |
 
 Raising the alarm threshold reduces false alarms but misses more genuine warnings; lowering it does the opposite. In a real deployment it should be tuned to the cost of each kind of error.
 
@@ -126,14 +137,14 @@ The model and SHAP are **not run on the device**. Predictions and explanations a
 
 ```text
 PC / Kaggle notebook                       Android app
-â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€                       â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-features â†’ LightGBM â†’ SHAP  â”€â”€â–º JSON â”€â”€â–º  QR scan â†’ snapshot / simulation view
+────────────────────                       ───────────
+features → LightGBM → SHAP  ──► JSON ──►  QR scan → snapshot / simulation view
                             (per engine)
 ```
 
 Each engine has a `motor_<id>.json` file with, for every cycle: the risk probability, the alarm flag, and the top contributing features (SHAP). `metadata.json` holds the engine list and the threshold.
 
-**In the field** the chain would be the same: sensor data â†’ feature computation â†’ model â†’ threshold â†’ explanation â†’ display. In this prototype the middle steps are precomputed, so the app is a **display and simulation prototype, not a live sensor integration**.
+**In the field** the chain would be the same: sensor data → feature computation → model → threshold → explanation → display. In this prototype the middle steps are precomputed, so the app is a **display and simulation prototype, not a live sensor integration**.
 
 ## Android app
 
@@ -149,11 +160,11 @@ Each engine has a `motor_<id>.json` file with, for every cycle: the risk probabi
 2. **Snapshot view.** The app opens at the engine's first alarm: risk percentage, usage counter, and a risk chart.
 3. **Simulation.** The engine's record plays step by step (0.5 s per step), updating the risk, the priority sensors, and the contribution bars.
 
-The screen shows a **risk percentage and usage counter, never the remaining life**, and lists the sensors to check first.
+The screen shows a **risk percentage and usage counter, never the remaining life**, and lists the sensors to check first, together with each sensor's relative share of the warning.
 
-> **[Image placeholder]** `docs/images/08_app_qr_screen.png` â€” QR scanning screen
-
-> **[Image placeholder]** `docs/images/09_app_dashboard.png` â€” dashboard: risk percentage, chart, priority sensors, contribution bars
+| QR scan screen | Dashboard |
+|:---:|:---:|
+| ![QR scan screen](notebook/images/09_qr_okutma_ekrani.jpg) | ![Dashboard](notebook/images/10_dashboard_ekrani.jpg) |
 
 <!-- TODO: describe the USB camera activity (UsbCameraActivity) here if it is a supported feature. -->
 
@@ -164,7 +175,7 @@ The screen shows a **risk percentage and usage counter, never the remaining life
 | `app/` | Android application (Kotlin) |
 | `app/src/main/assets/mobile_export/` | Per-engine JSON and `metadata.json` |
 | `notebook/` | Data analysis, model training, and JSON export (Jupyter) |
-| `docs/images/` | Figures used in this README |
+| `notebook/images/` | Figures used in this README |
 
 ## Getting started
 
@@ -193,9 +204,8 @@ Main libraries: pandas, NumPy, scikit-learn, LightGBM, SHAP, matplotlib, seaborn
 
 - Select features and thresholds on an **engine-level validation split**, keeping the test engines for the final evaluation only.
 - Tune the alarm threshold to the cost of false alarms versus missed warnings.
-- Evaluate on FD002â€“FD004 and on real operational data.
+- Evaluate on FD002–FD004 and on real operational data.
 
 ## Data source
 
 NASA Prognostics Center of Excellence, *Turbofan Engine Degradation Simulation Data Set (C-MAPSS)*, FD001 subset.
-
