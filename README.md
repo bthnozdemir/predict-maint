@@ -203,4 +203,15 @@ Main libraries: pandas, NumPy, scikit-learn, LightGBM, SHAP, matplotlib, seaborn
 
 ## Data source
 
-NASA Prognostics Center of Excellence, *Turbofan Engine Degradation Simulation Data Set (C-MAPSS)*, FD001 subset.
+**NASA C-MAPSS** (Commercial Modular Aero-Propulsion System Simulation), subset **FD001**. The data is synthetic (simulated), not real fleet data.
+
+- **Original source:** NASA Prognostics Center of Excellence, [Prognostics Data Repository](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/) (*Turbofan Engine Degradation Simulation Data Set*).
+- **Copy used in this project:** [NASA C-MAPSS on Kaggle](https://www.kaggle.com/datasets/behrad3d/nasa-cmaps). The raw data is not included in this repository.
+
+**Citation**
+
+> A. Saxena and K. Goebel (2008). "Turbofan Engine Degradation Simulation Data Set", NASA Prognostics Data Repository, NASA Ames Research Center, Moffett Field, CA.
+
+**Method reference**
+
+> A. Saxena, K. Goebel, D. Simon and N. Eklund (2008). "Damage Propagation Modeling for Aircraft Engine Run-to-Failure Simulation", *2008 International Conference on Prognostics and Health Management (PHM08)*, Denver, CO. DOI: [10.1109/PHM.2008.4711414](https://doi.org/10.1109/PHM.2008.4711414)
