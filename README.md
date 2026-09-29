@@ -6,7 +6,7 @@ Predict Maint is a predictive maintenance prototype built on the NASA C-MAPSS (F
 
 > **Scope:** the data is a NASA **simulation**, not real fleet data. This project demonstrates the modeling approach and a mobile decision-support display. It is a prototype and does not replace a real maintenance decision.
 
-![System flow](notebook/images/01_sistem_akisi.jpg)
+![System flow](notebook/images/01_sistem_akisi.png)
 
 *Note: figure labels inside the images are in Turkish; the surrounding text explains each one.*
 
@@ -52,7 +52,7 @@ Instead, the model estimates the **probability that an engine has entered the cr
 
 The plot below compares each sensor of one engine against its own *healthy reference* (the mean of its first 20 cycles). Some sensors drift clearly as the engine approaches failure; others barely move.
 
-![Sensors versus their healthy reference](notebook/images/02_sensor_saglam_referans.jpg)
+![Sensors versus their healthy reference](notebook/images/02_sensor_saglam_referans.png)
 
 ## Method
 
@@ -72,9 +72,9 @@ Raw data
 
 A single sensor reading is noisy. For each sensor the notebook derives rolling means and standard deviations over several windows, lagged values, and slopes, which describe how the sensor has been *moving*.
 
-![Sensor noise reduction with rolling windows](notebook/images/03_sensor_gurultu_temizleme.jpg)
+![Sensor noise reduction with rolling windows](notebook/images/03_sensor_gurultu_temizleme.png)
 
-![Lag and slope features](notebook/images/04_lag_ve_egim_ozellikleri.jpg)
+![Lag and slope features](notebook/images/04_lag_ve_egim_ozellikleri.png)
 
 ### Feature reduction
 
@@ -88,13 +88,13 @@ Many derived features carry overlapping information. Features were ranked by SHA
 
 The best PR-AUC in the sweep was 0.9572 with 170 features. With 120 features it was 0.9568, within a 0.001 tolerance, so the smaller set was used.
 
-![PR-AUC versus number of features](notebook/images/05_ozellik_sayisi_taramasi.jpg)
+![PR-AUC versus number of features](notebook/images/05_ozellik_sayisi_taramasi.png)
 
 Within the 120-feature pool, sensors were ranked by their combined SHAP share. Sensors `s14` and `s9` together contribute about 3.5% of the pool, below the 5% tolerance, so they were removed entirely. The 120 features cover about 76.7% of the total SHAP importance across all 935 features.
 
-![Sensor elimination analysis](notebook/images/06_sensor_eleme_analizi.jpg)
+![Sensor elimination analysis](notebook/images/06_sensor_eleme_analizi.png)
 
-![Sensor elimination flow](notebook/images/08_sensor_akis_semasi.jpg)
+![Sensor elimination flow](notebook/images/08_sensor_akis_semasi.png)
 
 ## Results
 
@@ -112,12 +112,7 @@ Reducing the input from 935 to 111 features changed ROC-AUC by less than 0.001 i
 
 Because the risky class is rare in the test set, PR-AUC and recall are reported alongside ROC-AUC. Detection is strongest for engines very close to failure and weaker near the edge of the risk window.
 
-![Mean risk score by RUL range and detection rate by horizon](notebook/images/07_risk_skoru_ve_yakalama.jpg)
-
-<!-- Optional example plots: uncomment once the files are in notebook/images/ and the names below match.
-![Engine that crosses the alarm threshold](notebook/images/motor_100.jpg)
-![Engine that stays healthy](notebook/images/motor_098.jpg)
--->
+![Mean risk score by RUL range and detection rate by horizon](notebook/images/07_risk_skoru_ve_yakalama.png)
 
 ## Thresholds explained
 
@@ -164,7 +159,7 @@ The screen shows a **risk percentage and usage counter, never the remaining life
 
 | QR scan screen | Dashboard |
 |:---:|:---:|
-| ![QR scan screen](notebook/images/09_qr_okutma_ekrani.jpg) | ![Dashboard](notebook/images/10_dashboard_ekrani.jpg) |
+| ![QR scan screen](notebook/images/09_qr_okutma_ekrani.png) | ![Dashboard](notebook/images/10_dashboard_ekrani.png) |
 
 <!-- TODO: describe the USB camera activity (UsbCameraActivity) here if it is a supported feature. -->
 
