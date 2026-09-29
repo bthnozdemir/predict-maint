@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!--
+        AndroidUSBCamera (AUSBC) için: cihazın USB host/OTG desteklemesi
+        gerektiğini belirtir. required="false" veriyoruz ki Play Store bu
+        özelliği desteklemeyen cihazları otomatik engellemesin.
+    -->
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Augmency_QR">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".DashboardActivity"
+            android:screenOrientation="landscape" />
+
+        <!--
+            USB kamera ekranı: UVC cihaz takıldığında sistemin bu Activity'yi
+            otomatik önermesi için intent-filter eklendi (USB_DEVICE_ATTACHED).
+            android:exported="true" ZORUNLU çünkü Android 12+ (API 31+) intent
+            filtreli her activity için bu değerin açıkça belirtilmesini ister.
+            true veriyoruz çünkü sistemin (USB donanım servisinin) bu ekranı
+            dışarıdan tetikleyebilmesi gerekiyor.
+        -->
+        <activity
+            android:name=".UsbCameraActivity"
+            android:exported="true"
+            android:screenOrientation="landscape"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+
+    </application>
+
+</manifest>

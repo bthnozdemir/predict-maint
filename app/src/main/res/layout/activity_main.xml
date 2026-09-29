@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0B1120">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="14dp"
+                    android:background="@drawable/dot_accent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.05"
+                    android:text="AUGMENCY"
+                    android:textColor="#F8FAFC"
+                    android:textSize="56sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="138dp"
+                android:layout_height="114dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/circle_icon_bg">
+
+                <ImageView
+                    android:layout_width="128dp"
+                    android:layout_height="88dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_qr_placeholder"
+                    app:tint="#38BDF8" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:letterSpacing="0.15"
+                android:text="PREDICTIVE MAINTENANCE"
+                android:textColor="#38BDF8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="6dp"
+                android:text="Motor sağlık durumunu ve arıza riskini canlı olarak görüntüle"
+                android:textColor="#94A3B8"
+                android:textSize="22sp" />
+
+            <Button
+                android:id="@+id/btnScan"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#0369A1"
+                android:letterSpacing="0.08"
+                android:text="QR KODU OKUT"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
+
+            <TextView
+                android:id="@+id/txtResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text=""
+                android:textColor="#64748B"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/overlayQrHata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0B1120"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:alpha="0"
+        android:visibility="invisible"
+        android:clickable="false"
+        android:focusable="false">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚠"
+            android:textColor="#F87171"
+            android:textSize="80sp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/txtQrHataDetay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BU MOTOR KAYITLI DEĞİL"
+            android:textColor="#F87171"
+            android:textSize="52sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.03"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</FrameLayout>

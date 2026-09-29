@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Bu dosya hangi USB cihazların uygulamayı otomatik açacağını belirler.
+    class="14" (USB Video Class, yani UVC) olan HER USB cihazı kabul et
+    demek.
+-->
+<resources>
+    <usb-device class="14" />
+</resources>
