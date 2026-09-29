@@ -6,7 +6,7 @@ Predict Maint is a predictive maintenance prototype built on the NASA C-MAPSS (F
 
 > **Scope:** the data is a NASA **simulation**, not real fleet data. This project demonstrates the modeling approach and a mobile decision-support display. It is a prototype and does not replace a real maintenance decision.
 
-> **[Image placeholder]** `docs/images/01_system_flow.png` — system flow diagram (raw data → features → LightGBM → SHAP → JSON → Android)
+![System flow](docs/images/01_system_flow.png)
 
 ---
 
